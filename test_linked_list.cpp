@@ -1,7 +1,6 @@
 #include<iostream>
 #include<stdlib.h>
-#include"_list_.h"
-#include"_ink_.h"
+#include"linked_list.hpp"
 using namespace std;
 int main()
 {
@@ -10,8 +9,8 @@ int main()
 	link<int> *p = creat(a,6);
 	link<int> *q = creat(b, 6);
 
-	cout << "Á´±íÖĞÔªËØµÄ×î´óÖµÊÇ" << max(p, 6) << endl;
-	cout << "½áµãµÄµØÖ·ÊÇ"<<local(p, 3, 6) << endl; 
+	cout << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½" << max(p, 6) << endl;
+	cout << "ï¿½ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½"<<local(p, 3, 6) << endl; 
 	Print(mergelists(p, q));
 	p = tidyup(p);
 	Print(p);

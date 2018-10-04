@@ -1,8 +1,21 @@
 
 #include <iostream>
-#include "_ink_.h"
 using namespace std;
-
+template <typename T> class link
+{
+public:
+	T element;
+	link<T> *next;
+	link(const T &e, link *n = NULL)
+	{
+		element = e;
+		next = n;
+	}
+	link(link* nextval = NULL)
+	{
+		next = nextval;
+	}
+};
 template <typename T> class List :public link<T>
 {
 private:
@@ -31,7 +44,7 @@ public:
 };
 
 	template <typename T>
-	link<T>* creat(T *a, int lenth)//´«µÝÊý×éÊ×µØÖ·ºÍÊý×é³¤¶È
+	link<T>* creat(T *a, int lenth)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×µï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½é³¤ï¿½ï¿½
 	{
 		int cnt1 = 0;
 		if (lenth == 0) return NULL;
@@ -46,8 +59,8 @@ public:
 		return head;
 	}
 	template <typename T>
-	/*¶¨ÒåÒ»¸öÑ°Çó×î´óÖµµÄº¯Êý£¬±éÀúÁ´±íËùÓÐÔªËØ£¬·µ»Ø×î´óÖµ
-	²ÎÊýp´«µÝÁ´±íµÄheadÖ¸Õë£»²ÎÊýlenth´«µÝÊý×é³¤¶È*/
+	/*ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+	ï¿½ï¿½ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½headÖ¸ï¿½ë£»ï¿½ï¿½ï¿½ï¿½lenthï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é³¤ï¿½ï¿½*/
 	T max(link<T> *p,int lenth) 
 	{
 		T temp = p->next->element;
@@ -68,7 +81,7 @@ public:
 
 
 	template <typename T>
-	link<T>* reserve(link<T> *head)//²ÎÊýhead´«µÝÁ´±íhead½áµãµÄÖ¸Õë 
+	link<T>* reserve(link<T> *head)//ï¿½ï¿½ï¿½ï¿½headï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½headï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ 
 	{
 		link<T> *p;
 		link<T> *q = NULL;
@@ -86,10 +99,10 @@ public:
 		return head;
 	}  
     template <typename T>
-	//¶¨ÒåÒ»¸öº¯ÊýÓÃÓÚÊä³öÁ´±í
-	//headÖ¸ÕëÓÃÓÚ´«µÝÁ´±íµÄhead½áµãµØÖ·
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//headÖ¸ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½headï¿½ï¿½ï¿½ï¿½Ö·
 	void Print(link<T> *head) {
-		cout << "Á´±íµÄÔªËØÊÇ£º";
+		cout << "ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½Ç£ï¿½";
 		for (link<T> *p = head->next; p != NULL; p = p->next) {
 			cout << p->element << '\t';
 		}
@@ -98,7 +111,7 @@ public:
 	}
 
 	template <typename T>
-	/*Ö¸ÕëpÎªÍ·½áµãhead½Ó¿Ú£¬²ÎÊýiÎªµÚ¼¸¸ö½áµã£¬²ÎÊýlenthÎªÁ´±í³¤¶È*/
+	/*Ö¸ï¿½ï¿½pÎªÍ·ï¿½ï¿½ï¿½headï¿½Ó¿Ú£ï¿½ï¿½ï¿½ï¿½ï¿½iÎªï¿½Ú¼ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½lenthÎªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	link<T>* local(link<T> *p, int i,int lenth)
 	{
 		if (i > lenth)
@@ -140,13 +153,13 @@ public:
 
 	template <typename T>
 	link<T>* mergelists(link<T>* head1,link<T>* head2)
-		// headÖ¸ÕëÊÇÁ½Á´±íhead½áµãµÄ½Ó¿Ú
+		// headÖ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½headï¿½ï¿½ï¿½Ä½Ó¿ï¿½
 	{
 		head1 = sort(head1);
 		head2 = sort(head2);
-		cout << "±»ÅÅÐòºóµÄµÚÒ»¸öÁ´±í½á¹ûÎª£º";
+		cout << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½";
 		Print(head1);
-		cout << "±»ÅÅÐòºóµÄµÚ¶þ¸öÁ´±í½á¹ûÎª£º";
+		cout << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÚ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½";
 		Print(head2);
 		//link<T>*temp = head1;
 		link<T>*p = head1->next;
@@ -160,12 +173,12 @@ public:
 
 	template <typename T>
 	link<T>* sort(link<T>* head)
-		//´«ÈëÁ´±íµÄhead½áµã
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½headï¿½ï¿½ï¿½
 	{
 		link<T> *p;
 		link<T> *q;
 		T temp;
-		for(p=head->next;p!=NULL;p=p->next)//Ã°ÅÝÅÅÐò
+		for(p=head->next;p!=NULL;p=p->next)//Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			for(q=p->next;q!=NULL;q=q->next)
 				if (p->element > q->element)
 				{
