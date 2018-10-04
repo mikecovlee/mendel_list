@@ -80,16 +80,17 @@ namespace mendel {
 				data=new_data;
 			}
 		}
-		template <typename T>
-		link<T>* local(link<T> *p, int i,int lenth)
+		T& locate(size_t index)
 		{
-			if (i > lenth)
-				return nullptr;
-			link<T>* m = p;
-			for (int j = 0; j < i; j++)
-				m = m->next;
-			return m;
-
+			node_t* dat=data;
+			for(size_t i=0;dat!=nullptr;dat=dat->next,++i)
+				if(i==index)
+					return dat->data;
+			throw std::out_of_range("Index out of range.");
+		}
+		const T& locate(size_t index) const
+		{
+			const_cast<linked_list*>(this)->locate(index);
 		}
 		template <typename T>
 		link<T>* tidyup(link<T>*data)
