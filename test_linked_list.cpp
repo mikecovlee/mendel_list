@@ -1,19 +1,19 @@
-#include<iostream>
-#include<stdlib.h>
+#include <iostream>
+#include <array>
 #include"linked_list.hpp"
-using namespace std;
 int main()
 {
-	int a[6] = { 1,2,3,4,5,6 };
-	int b[6] = { 6,5,4,3,2,1 };
-	link<int> *p = creat(a,6);
-	link<int> *q = creat(b, 6);
-
-	cout << "������Ԫ�ص����ֵ��" << max(p, 6) << endl;
-	cout << "���ĵ�ַ��"<<local(p, 3, 6) << endl; 
-	Print(mergelists(p, q));
-	p = tidyup(p);
-	Print(p);
-	system("pause");
+	std::array<int,6> a = { 1,2,3,4,5,6 };
+	std::array<int,8> b = { 8,7,6,5,4,3,2,1 };
+	mendel::linked_list<int> p(a);
+	mendel::linked_list<int> q(b);
+	std::cout<<p<<std::endl;
+	std::cout<<q<<std::endl;
+	std::cout<<p.max()<<std::endl;
+	std::cout<<p.locate(3)<<std::endl;
+	p.merge(q);
+	std::cout<<p<<std::endl;
+	p.tidy_up();
+	std::cout<<p<<std::endl;
 	return 0;
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <stdexcept>
 #include <ostream>
 #include <utility>
@@ -11,7 +12,7 @@ namespace mendel {
 		node *next=nullptr;
 		node()=default;
 		node(node* next_node):next(next_node) {}
-		template<typename element_t>node(element_t&& e, node *n = nullptr):data(std::forward<X>(e)), next(n) {}
+		template<typename element_t>node(element_t&& e, node *n = nullptr):data(std::forward<element_t>(e)), next(n) {}
 	};
 	template <typename T> class linked_list final {
 	public:
@@ -22,12 +23,13 @@ namespace mendel {
 		linked_list(linked_list&& list) noexcept{
 			std::swap(data,list.data);
 		}
-		template<size_t length>
+		template<std::size_t length>
 		linked_list(const std::array<T,length>& arr)
 		{
-			data=new node_t(arr[0]);
-			for(size_t i=1;i<length;++i)
-				data->next=new node_t(arr[i]);
+			node_t* new_data=new node_t(arr[0]);
+			data=new_data;
+			for(size_t i=1;i<length;new_data=new_data->next, ++i)
+				new_data->next=new node_t(arr[i]);
 		}
 		~linked_list()
 		{
@@ -51,8 +53,8 @@ namespace mendel {
 			if(data==nullptr)
 				return nullptr;
 			node_t* new_data=new node_t(data->data);
-			for(node_t* it=data->next;it!=nullptr;new_data=new_data->next, it=it->next)
-				new_data->next=new node_t(it->data);
+			for(node_t* e=data->next,*it=new_data;e!=nullptr;e=e->next, it=it->next)
+				it->next=new node_t(e->data);
 			return new_data;
 		}
 		T& max()
@@ -94,10 +96,11 @@ namespace mendel {
 		}
 		void tidy_up()
 		{
+			std::cout<<__func__<<":"<<*this<<std::endl;
 			node_t* target=nullptr;
 			for(node_t* e=data;e!=nullptr;e=e->next)
 			{
-				for(node* it=e;it!=nullptr;it=it->next)
+				for(node_t* it=e;it!=nullptr;it=it->next)
 				{
 					if(e->data==it->data)
 					{
@@ -105,6 +108,8 @@ namespace mendel {
 						break;
 					}
 				}
+				if(target!=nullptr)
+					break;
 			}
 			if(target!=nullptr)
 			{
@@ -112,12 +117,12 @@ namespace mendel {
 				{
 					if(target->data==it->data)
 					{
-						previous->next=it;
+						previous->next=it->next;
 						delete it;
 						it=previous->next;
 					}else
 					{
-						previous=prvious->next;
+						previous=previous->next;
 						it=it->next;
 					}
 				}
@@ -146,7 +151,7 @@ namespace mendel {
 template<typename T>
 std::ostream& operator<<(std::ostream& o,const mendel::linked_list<T>& list)
 {
-	using node_t=mendel::linked_list<T>::node_t;
+	using node_t=typename mendel::linked_list<T>::node_t;
 	for(node_t* it=list.data;it!=nullptr;it=it->next)
 		o<<it->data<<"\t";
 	o<<std::flush;
