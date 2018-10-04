@@ -24,7 +24,9 @@ namespace mendel {
 		template<size_t length>
 		linked_list(const std::array<T,length>& arr)
 		{
-			//TODO
+			data=new node_t(arr[0]);
+			for(size_t i=1;i<length;++i)
+				data->next=new node_t(arr[i]);
 		}
 		~linked_list()
 		{
@@ -47,20 +49,6 @@ namespace mendel {
 			for(node_t* it=data->next;it!=nullptr;new_data=new_data->next, it=it->next)
 				new_data->next=new node_t(it->data);
 			return new_data;
-		}
-		template <typename T>
-		link<T>* creat(T *a, int lenth)
-		{
-			int cnt1 = 0;
-			if (lenth == 0) return nullptr;
-			link<T> *p;
-			link<T> *data = new link<T>;
-			p = data;
-			for (int i = 0; i < lenth; i++) {
-				p=p->next = new link<T>(a[i], nullptr);
-				cnt1++;
-			}
-			return data;
 		}
 		template <typename T>
 		T max(link<T> *p,int lenth)
