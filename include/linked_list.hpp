@@ -92,27 +92,37 @@ namespace mendel {
 		{
 			const_cast<linked_list*>(this)->locate(index);
 		}
-		template <typename T>
-		link<T>* tidyup(link<T>*data)
+		void tidy_up()
 		{
-			if (data == nullptr)return nullptr;
-			link<T>*p;
-			link<T>*q;
-			link<T>*m;
-			p = data->next;
-			while (p != nullptr) {
-				q = p;
-				while (q->next != nullptr) {
-					if (q->next->data == p->data) {
-						m = q->next;
-						q->next = m->next;
-						delete(m);
+			node_t* target=nullptr;
+			for(node_t* e=data;e!=nullptr;e=e->next)
+			{
+				for(node* it=e;it!=nullptr;it=it->next)
+				{
+					if(e->data==it->data)
+					{
+						target=e;
+						break;
 					}
-					else q = q->next;
 				}
-				p = p->next;
 			}
-			return data;
+			if(target!=nullptr)
+			{
+				for(node_t *previous=target, *it=target->next;it!=nullptr;)
+				{
+					if(target->data==it->data)
+					{
+						previous->next=it;
+						delete it;
+						it=previous->next;
+					}else
+					{
+						previous=prvious->next;
+						it=it->next;
+					}
+				}
+				tidy_up();
+			}
 		}
 		template <typename T>
 		link<T>* mergelists(link<T>* head1,link<T>* head2)
