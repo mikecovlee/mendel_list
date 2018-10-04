@@ -33,6 +33,10 @@ namespace mendel {
 		{
 			clear();
 		}
+		bool empty() const
+		{
+			return data==nullptr;
+		}
 		void clear()
 		{
 			while (data != nullptr) {
@@ -42,7 +46,7 @@ namespace mendel {
 			}
 			data=nullptr;
 		}
-		node_t* copy()
+		node_t* copy() const
 		{
 			if(data==nullptr)
 				return nullptr;
@@ -51,23 +55,19 @@ namespace mendel {
 				new_data->next=new node_t(it->data);
 			return new_data;
 		}
-		template <typename T>
-		T max(link<T> *p,int lenth)
+		T& max()
 		{
-			T temp = p->next->data;
-			for (int i = 0; i < lenth; i++)
-			{
-				if (temp > (p->next->data))
-					p = p->next;
-				else
-				{
-					temp = p->next->data;
-					p = p->next;
-				}
-				if (p == nullptr)
-					continue;
-			}
-			return temp;
+			if(data==nullptr)
+				throw std::logic_error("Container is empty.");
+			node_t* dat=data;
+			for(node_t* it=data->next;it!=nullptr;it=it->next)
+				if(it->data>dat->data)
+					dat=it;
+			return dat->data;
+		}
+		const T& max() const
+		{
+			return const_cast<linked_list*>(this)->max();
 		}
 		template <typename T>
 		link<T>* reserve(link<T> *data)
