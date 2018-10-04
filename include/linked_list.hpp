@@ -124,33 +124,22 @@ namespace mendel {
 				tidy_up();
 			}
 		}
-		template <typename T>
-		link<T>* mergelists(link<T>* head1,link<T>* head2)
+		void merge(const linked_list& list)
 		{
-			head1 = sort(head1);
-			head2 = sort(head2);
-			link<T>*p = head1->next;
-			while (p->next != nullptr)
-				p = p->next;
-			p->next = head2->next;
-			delete head2;
-			head1=sort(head1);
-			return head1;
+			if(&list==this)
+				throw std::logic_error("Self merge.");
+			if(data!=nullptr)
+			{
+				node_t* tail=data;
+				for(;tail->next!=nullptr;tail=tail->next);
+				tail->next=list.copy();
+			}else
+				data=list.copy();
+			sort();
 		}
-		template <typename T>
-		link<T>* sort(link<T>* data)
+		void sort()
 		{
-			link<T> *p;
-			link<T> *q;
-			T temp;
-			for(p=data->next; p!=nullptr; p=p->next)
-				for(q=p->next; q!=nullptr; q=q->next)
-					if (p->data > q->data) {
-						temp = p->data;
-						p->data = q->data;
-						q->data = temp;
-					}
-			return data;
+			// TODO
 		}
 	};
 }
