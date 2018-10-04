@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <stdexcept>
 #include <ostream>
 #include <utility>
@@ -10,7 +11,7 @@ namespace mendel {
 	public:
 		T data;
 		node *next = nullptr;
-		node() = default;
+		node() = delete;
 		node(node *next_node) : next(next_node) {}
 		template <typename element_t>
 		node(element_t &&e, node *n = nullptr) : data(std::forward<element_t>(e)), next(n) {}
@@ -74,7 +75,7 @@ namespace mendel {
 		{
 			return const_cast<linked_list *>(this)->max();
 		}
-		void reserve()
+		void reverse()
 		{
 			if (data != nullptr) {
 				node_t *new_data = new node_t(data->data);
@@ -136,11 +137,46 @@ namespace mendel {
 			}
 			else
 				data = list.copy();
-			sort();
+		}
+		void sort(const std::function<bool(const T &, const T &)> &functor)
+		{
+			if (data != nullptr) {
+				node_t *new_data = new node_t(data->data);
+				for (node_t *it = data->next; it != nullptr; it = it->next) {
+					bool inserted = false;
+					if (functor(it->data, new_data->data)) {
+						node_t *previous = new_data;
+						for (node_t *matched = new_data->next; matched != nullptr; previous = previous->next, matched = matched->next) {
+							if (!functor(it->data, matched->data)) {
+								previous->next = new node_t(it->data, matched);
+								inserted = true;
+								break;
+							}
+						}
+						if (!inserted)
+							previous->next = new node_t(it->data);
+					}
+					else {
+						for (node_t *previous = new_data, *matched = new_data->next; matched != nullptr; previous = previous->next, matched = matched->next) {
+							if (functor(it->data, matched->data)) {
+								previous->next = new node_t(it->data, matched);
+								inserted = true;
+								break;
+							}
+						}
+						if (!inserted)
+							new_data = new node_t(it->data, new_data);
+					}
+				}
+				clear();
+				data = new_data;
+			}
 		}
 		void sort()
 		{
-			// TODO
+			sort([](const T &a, const T &b) {
+				return a > b;
+			});
 		}
 	};
 } // namespace mendel
