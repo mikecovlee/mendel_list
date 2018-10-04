@@ -1,216 +1,162 @@
-
-#include <iostream>
-using namespace std;
-template <typename T> class link
-{
-public:
-	T element;
-	link<T> *next;
-	link(const T &e, link *n = NULL)
-	{
-		element = e;
-		next = n;
-	}
-	link(link* nextval = NULL)
-	{
-		next = nextval;
-	}
-};
-template <typename T> class List :public link<T>
-{
-private:
-	link<T> *head;
-	link<T> *tail;
-	link<T> *curr;
-	void Removeall()
-	{
-		while (head != NULL)
-		{
-			curr = head;
-			head = head->next;
-			delete curr;
+#pragma once
+#include <stdexcept>
+#include <utility>
+#include <array>
+namespace mendel {
+	using size_t=unsigned long;
+	template <typename T> class node final {
+	public:
+		T data;
+		node *next=nullptr;
+		node()=default;
+		node(node* next_node):next(next_node) {}
+		template<typename element_t>node(element_t&& e, node *n = nullptr):data(std::forward<X>(e)), next(n) {}
+	};
+	template <typename T> class linked_list final {
+	public:
+		using node_t=node<T>;
+		node_t *data=nullptr;
+		linked_list()=default;
+		linked_list(const linked_list& list):data(list.copy()){}
+		linked_list(linked_list&& list) noexcept{
+			std::swap(data,list.data);
 		}
-	}
-public:
-	~List() {
-		Removeall();//destructor
-	}
-	void Clear()
-	{
-		Removeall();
-	}
-	
-	
-};
-
-	template <typename T>
-	link<T>* creat(T *a, int lenth)//���������׵�ַ�����鳤��
-	{
-		int cnt1 = 0;
-		if (lenth == 0) return NULL;
-		link<T> *p;
-		link<T> *head = new link<T>;
-		p = head;
-		for (int i = 0; i < lenth; i++)//
+		template<size_t length>
+		linked_list(const std::array<T,length>& arr)
 		{
-			p=p->next = new link<T>(a[i], NULL);
-			cnt1++;
+			//TODO
 		}
-		return head;
-	}
-	template <typename T>
-	/*����һ��Ѱ�����ֵ�ĺ�����������������Ԫ�أ��������ֵ
-	����p���������headָ�룻����lenth�������鳤��*/
-	T max(link<T> *p,int lenth) 
-	{
-		T temp = p->next->element;
-		for (int i = 0; i < lenth; i++) \
+		~linked_list()
 		{
-			if (temp > (p->next->element))
-				p = p->next;
-			else 
+			clear();
+		}
+		void clear()
+		{
+			while (data != nullptr) {
+				node_t* curr = data;
+				data = data->next;
+				delete curr;
+			}
+			data=nullptr;
+		}
+		node_t* copy()
+		{
+			if(data==nullptr)
+				return nullptr;
+			node_t* new_data=new node_t(data->data);
+			for(node_t* it=data->next;it!=nullptr;new_data=new_data->next, it=it->next)
+				new_data->next=new node_t(it->data);
+			return new_data;
+		}
+		template <typename T>
+		link<T>* creat(T *a, int lenth)
+		{
+			int cnt1 = 0;
+			if (lenth == 0) return nullptr;
+			link<T> *p;
+			link<T> *data = new link<T>;
+			p = data;
+			for (int i = 0; i < lenth; i++) {
+				p=p->next = new link<T>(a[i], nullptr);
+				cnt1++;
+			}
+			return data;
+		}
+		template <typename T>
+		T max(link<T> *p,int lenth)
+		{
+			T temp = p->next->data;
+			for (int i = 0; i < lenth; i++)
 			{
-				temp = p->next->element;
+				if (temp > (p->next->data))
+					p = p->next;
+				else
+				{
+					temp = p->next->data;
+					p = p->next;
+				}
+				if (p == nullptr)
+					continue;
+			}
+			return temp;
+		}
+		template <typename T>
+		link<T>* reserve(link<T> *data)
+		{
+			link<T> *p;
+			link<T> *q = nullptr;
+			link<T> *temp;
+			p = data->next;
+			data->next = nullptr;
+			while (p != nullptr) {
+				temp = p->next;
+				p->next = q;
+				q = p;
+				p = temp;
+			}
+			data->next = q;
+			return data;
+		}
+		template <typename T>
+		link<T>* local(link<T> *p, int i,int lenth)
+		{
+			if (i > lenth)
+				return nullptr;
+			link<T>* m = p;
+			for (int j = 0; j < i; j++)
+				m = m->next;
+			return m;
+
+		}
+		template <typename T>
+		link<T>* tidyup(link<T>*data)
+		{
+			if (data == nullptr)return nullptr;
+			link<T>*p;
+			link<T>*q;
+			link<T>*m;
+			p = data->next;
+			while (p != nullptr) {
+				q = p;
+				while (q->next != nullptr) {
+					if (q->next->data == p->data) {
+						m = q->next;
+						q->next = m->next;
+						delete(m);
+					}
+					else q = q->next;
+				}
 				p = p->next;
 			}
-			if (p == NULL)
-				continue;
+			return data;
 		}
-		return temp;
-	}
-
-
-	template <typename T>
-	link<T>* reserve(link<T> *head)//����head��������head����ָ�� 
-	{
-		link<T> *p;
-		link<T> *q = NULL;
-		link<T> *temp;
-		p = head->next;
-		head->next = NULL;
-		while (p != NULL)
+		template <typename T>
+		link<T>* mergelists(link<T>* head1,link<T>* head2)
 		{
-			temp = p->next;
-			p->next = q;
-			q = p;
-			p = temp;
+			head1 = sort(head1);
+			head2 = sort(head2);
+			link<T>*p = head1->next;
+			while (p->next != nullptr)
+				p = p->next;
+			p->next = head2->next;
+			delete head2;
+			head1=sort(head1);
+			return head1;
 		}
-		head->next = q;
-		return head;
-	}  
-    template <typename T>
-	//����һ�����������������
-	//headָ�����ڴ��������head����ַ
-	void Print(link<T> *head) {
-		cout << "�����Ԫ���ǣ�";
-		for (link<T> *p = head->next; p != NULL; p = p->next) {
-			cout << p->element << '\t';
-		}
-		cout << endl;
-
-	}
-
-	template <typename T>
-	/*ָ��pΪͷ���head�ӿڣ�����iΪ�ڼ�����㣬����lenthΪ������*/
-	link<T>* local(link<T> *p, int i,int lenth)
-	{
-		if (i > lenth)
-			return NULL;
-		link<T>* m = p;
-		for (int j = 0; j < i; j++)
-			m = m->next;
-		return m;
-
-	}
-
-	template <typename T>
-	link<T>* tidyup(link<T>*head)
-	{
-		if (head == NULL)return NULL;
-		//link<T>*meory;
-		link<T>*p;
-		link<T>*q;
-		link<T>*m;
-		p = head->next;
-		while (p != NULL)
+		template <typename T>
+		link<T>* sort(link<T>* data)
 		{
-			q = p;
-			while (q->next != NULL)
-			{
-				if (q->next->element == p->element)
-				{
-					m = q->next;
-					q->next = m->next;
-					delete(m);
-				}
-				else q = q->next;
-			}
-			p = p->next;
+			link<T> *p;
+			link<T> *q;
+			T temp;
+			for(p=data->next; p!=nullptr; p=p->next)
+				for(q=p->next; q!=nullptr; q=q->next)
+					if (p->data > q->data) {
+						temp = p->data;
+						p->data = q->data;
+						q->data = temp;
+					}
+			return data;
 		}
-		return head;
-
-	}
-
-	template <typename T>
-	link<T>* mergelists(link<T>* head1,link<T>* head2)
-		// headָ����������head���Ľӿ�
-	{
-		head1 = sort(head1);
-		head2 = sort(head2);
-		cout << "�������ĵ�һ��������Ϊ��";
-		Print(head1);
-		cout << "�������ĵڶ���������Ϊ��";
-		Print(head2);
-		//link<T>*temp = head1;
-		link<T>*p = head1->next;
-		while (p->next != NULL)
-			p = p->next;
-		p->next = head2->next;
-		delete head2;
-		head1=sort(head1);
-		return head1;
-	}
-
-	template <typename T>
-	link<T>* sort(link<T>* head)
-		//���������head���
-	{
-		link<T> *p;
-		link<T> *q;
-		T temp;
-		for(p=head->next;p!=NULL;p=p->next)//ð������
-			for(q=p->next;q!=NULL;q=q->next)
-				if (p->element > q->element)
-				{
-					temp = p->element;
-					p->element = q->element;
-					q->element = temp;
-				}
-		return head;
-	}
-
-
-
-	/*link<T>* reverse()
-	{
-	T *m = new T[cnt];
-	curr = head;
-	m[0] = curr->element;
-	for (int i = 1; i < cnt; i++) {
-	m[i] = curr->next->element;
-	curr = curr->next;
-	}
-	for (int i = 0; i < cnt; i++)
-	cout << m[i] << '\t';
-	cout << endl;
-	T temp = 0;
-	for (int i = 0; i < cnt / 2; i++) {
-	temp = m[i];
-	m[i] = m[cnt - 1 - i];
-	m[cnt - 1 - i] = temp;
-	}
-	for (int i = 0; i < cnt; i++)
-	cout << m[i] << '\t';
-	cout << endl;
-	return m;
-	}*/
+	};
+}
