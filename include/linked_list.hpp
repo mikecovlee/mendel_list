@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <ostream>
 #include <utility>
 #include <array>
 namespace mendel {
@@ -147,4 +148,13 @@ namespace mendel {
 			return data;
 		}
 	};
+}
+template<typename T>
+std::ostream& operator<<(std::ostream& o,const mendel::linked_list<T>& list)
+{
+	using node_t=mendel::linked_list<T>::node_t;
+	for(node_t* it=list.data;it!=nullptr;it=it->next)
+		o<<it->data<<"\t";
+	o<<std::flush;
+	return o;
 }
