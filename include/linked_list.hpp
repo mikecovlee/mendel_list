@@ -69,22 +69,16 @@ namespace mendel {
 		{
 			return const_cast<linked_list*>(this)->max();
 		}
-		template <typename T>
-		link<T>* reserve(link<T> *data)
+		void reserve()
 		{
-			link<T> *p;
-			link<T> *q = nullptr;
-			link<T> *temp;
-			p = data->next;
-			data->next = nullptr;
-			while (p != nullptr) {
-				temp = p->next;
-				p->next = q;
-				q = p;
-				p = temp;
+			if(data!=nullptr)
+			{
+				node_t* new_data=new node_t(data->data);
+				for(node_t* it=data->next;it!=nullptr;it=it->next)
+					new_data=new node_t(it->data, new_data);
+				clear();
+				data=new_data;
 			}
-			data->next = q;
-			return data;
 		}
 		template <typename T>
 		link<T>* local(link<T> *p, int i,int lenth)
